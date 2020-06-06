@@ -1,9 +1,10 @@
 # TYPESCRIPT #
+# Vendor Files
 ts_snake/node_modules/
 
 
 # RUST #
-# Generated files
+# Generated Binary
 rust_snake/target/
 
 # The library shouldn't decide about the exact versions of 

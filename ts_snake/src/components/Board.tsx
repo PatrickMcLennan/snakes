@@ -1,12 +1,19 @@
-import * as React from "react";
+import React from "react";
 
 import { Game, Square } from "./styles";
 
-const Board: (head: number, bodyArrayCoords: number[]) => JSX.Element = (head, bodyArrayCoords) => (
+interface IProps {
+  head: number;
+  bodyCoords: number[];
+}
+
+const Board: (IProps) => JSX.Element = ({ head, bodyCoords }) => (
   <Game>
-    {[...Array(100).keys()].map((index: number) => (
-      <Square isHead={head === index} isTail={bodyArrayCoords.includes(index)} />
-    ))}
+    {[...Array(100).keys()].map(
+      (index: number): JSX.Element => (
+        <Square isHead={head === index} isTail={bodyCoords.includes(index)} key={index} />
+      )
+    )}
   </Game>
 );
 

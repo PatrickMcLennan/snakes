@@ -1,12 +1,25 @@
-import * as React from "react";
+import React, { useEffect, useReducer } from "react";
 
 import { GlobalStyle } from "./utils/resets.style";
+import Board from "./components/Board";
 
-const App = () => {
+import { state as initialState, reducer } from "./reducer";
+
+const App = (): JSX.Element => {
+  const [{ head, bodyCoords }, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    window.addEventListener(`keydown`, ({ key }) => {
+      const acceptedkeys: string[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
+      if (!acceptedkeys.includes(key)) return;
+      else return dispatch({ type: `CHANGE_DIRECTION`, payload: key });
+    });
+  }, []);
+
   return (
     <>
       <GlobalStyle />
-      <div>hello work</div>
+      <Board head={head} bodyCoords={bodyCoords} />
     </>
   );
 };
