@@ -1,0 +1,9 @@
+[package]
+name = "rust_snake"
+version = "0.1.0"
+authors = ["Patrick McLennan <patrick.a.mclennan@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.7.3"
+piston_window = "0.109.0"
