@@ -6,14 +6,20 @@ interface IProps {
   head: number;
   bodyCoords: number[];
   foodCoords: number;
+  playerHasLost: boolean;
 }
 
-const Board: (IProps) => JSX.Element = ({ head, bodyCoords }) => {
+const Board: (IProps) => JSX.Element = ({ head, bodyCoords, foodCoords, playerHasLost }) => {
   return (
-    <Game>
+    <Game playerHasLost={playerHasLost}>
       {[...Array(100).keys()].map(
         (index: number): JSX.Element => (
-          <Square isHead={head === index} isTail={bodyCoords.includes(index)} key={index} />
+          <Square
+            isFood={foodCoords === index}
+            isHead={head === index}
+            isTail={bodyCoords.includes(index)}
+            key={index}
+          />
         )
       )}
     </Game>

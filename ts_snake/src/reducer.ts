@@ -1,5 +1,7 @@
 import { Reducer } from "react";
 
+import { generateFood } from "./utils/functions";
+
 export const state: IState = {
   head: 24,
   foodCoords: 50,
@@ -9,6 +11,7 @@ export const state: IState = {
 };
 
 export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
+  console.log(payload);
   switch (type) {
     case `FAILURE`:
       return {
@@ -20,6 +23,7 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
         ...state,
         head: payload.newHead,
         bodyCoords: [payload.currentHead, ...payload.bodyCoords],
+        foodCoords: generateFood([payload.currentHead, ...payload.bodyCoords]),
       };
     case "NOT_EATEN":
       return {
@@ -36,6 +40,3 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
       else throw new Error(`Reducer is having troubles right now.`);
   }
 };
-
-// On keypress and timer, attempt to move the head.  If there's an error, exit out.
-// If not, move the body after without checking.  The body or food should never really throw errors.
