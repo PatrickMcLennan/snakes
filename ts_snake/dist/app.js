@@ -2278,8 +2278,11 @@ if (false) {} else {
 
 exports.__esModule = true;
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+var resets_style_1 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module './utils/resets.style'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 var App = function () {
-    return React.createElement("div", null, "hello world!");
+    return (React.createElement(React.Fragment, null,
+        React.createElement(resets_style_1.GlobalStyle, null),
+        React.createElement("div", null, "hello work")));
 };
 exports["default"] = App;
 
