@@ -11,7 +11,7 @@ module.exports = [
         {
           test: /\.ts(x?)$/,
           include: /src/,
-          use: [{ loader: `ts-loader` }],
+          use: [{ loader: `babel-loader` }],
         },
       ],
     },
@@ -24,5 +24,8 @@ module.exports = [
         template: `./index.html`,
       }),
     ],
+    resolve: {
+      extensions: [".js", ".ts", ".tsx"],
+    },
   },
 ];
