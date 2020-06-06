@@ -1,25 +1,26 @@
 import { Reducer } from "react";
 
-interface IState {
-  direction: number;
-  head: number;
-  bodyCoords: number[];
-  gameOver: false;
-}
-
 export const state: IState = {
-  direction: +1,
-  head: 10,
-  bodyCoords: [7, 8, 9],
+  direction: `RIGHT`,
+  head: 24,
+  foodCoords: 50,
+  bodyCoords: [23, 22, 21],
   gameOver: false,
+  gameState: `PLAY`,
 };
 
-export const reducer: Reducer<IState, { type: string; payload: number | boolean | string }> = (
+export const reducer: Reducer<IState, { type: string; payload?: number | boolean | string }> = (
   state,
   { type, payload }
 ) => {
   switch (type) {
-    case "CHANGE_DIRECTION":
+    case `FAILURE`:
+      return {
+        ...state,
+        gameState: `FAIL`,
+      };
+    case "KEYPRESS":
+    case "TIMER":
       return {
         ...state,
         direction: payload,
@@ -33,3 +34,6 @@ export const reducer: Reducer<IState, { type: string; payload: number | boolean 
       else throw new Error(`Reducer is having troubles right now.`);
   }
 };
+
+// On keypress and timer, attempt to move the head.  If there's an error, exit out.
+// If not, move the body after without checking.  The body or food should never really throw errors.

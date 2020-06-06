@@ -15,12 +15,12 @@ export const Square = styled.div<{ isHead: boolean; isTail: boolean }>`
   ${({ isHead }) =>
     isHead &&
     css`
-      background-color: 1px solid red;
+      background-color: green;
     `}
 
   ${({ isTail }) =>
     isTail &&
     css`
-      background-color: 1px solid black;
+      background-color: black;
     `}
 `;

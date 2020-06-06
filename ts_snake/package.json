@@ -6,7 +6,7 @@
   "scripts": {
     "build:dev": "webpack --config ./webpack.config.js --mode development",
     "build:prod": "webpack --config ./webpack.config.js --mode production",
-    "start": "npm run build:dev && electron ./electron.ts"
+    "start": "npm run build:dev && electron ./electron.js"
   },
   "keywords": [],
   "author": "",
