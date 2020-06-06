@@ -1,8 +1,7 @@
 type GameState = `PLAY` | `FAIL`;
-type Direction = `UP` | `DOWN` | `RIGHT` | `LEFT`;
+type DirectionArrow = `arrowup` | `w` | `arrowright` | `d` | "arrowdown" | "s" | "arrowleft" | "a";
 
 interface IState {
-  direction: Direction;
   head: number;
   foodCoords: number;
   bodyCoords: number[];

@@ -4,29 +4,16 @@ const leftWall: number[] = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 export const compareString: (string: string) => string = (string) => string.trim().toLowerCase();
 
 // Gameplay
-export const checkErrors: (direction: Direction, head: number, bodyCoords: number[]) => boolean = (
-  direction,
-  head,
+export const checkErrors: (newHead: number, currentHead: number, bodyCoords: number[]) => boolean = (
+  newHead,
+  currentHead,
   bodyCoords
 ) => {
-  switch (direction) {
-    case `UP`:
-      if (head <= 9) return true;
-      if (bodyCoords.includes(head - 10)) return true;
-      else return false;
-    case `RIGHT`:
-      if (rightWall.includes(head)) return true;
-      if (bodyCoords.includes(head + 1)) return true;
-      else return false;
-    case `DOWN`:
-      if (head >= 90) return true;
-      if (bodyCoords.includes(head + 10)) return true;
-      else return false;
-    case `LEFT`:
-      if (leftWall.includes(head)) return true;
-      if (bodyCoords.includes(head - 1)) return true;
-      else return false;
-  }
+  if (bodyCoords.includes(newHead)) return true;
+  if (rightWall.includes(currentHead) && currentHead + 1 === newHead) return true;
+  if (leftWall.includes(currentHead) && currentHead - 1 === newHead) return true;
+  if (newHead > 100 || newHead < 0) return true;
+  else return false;
 };
 
 export const generateFood: (totalSnake: number[]) => number = (totalSnake) => {
@@ -34,19 +21,19 @@ export const generateFood: (totalSnake: number[]) => number = (totalSnake) => {
   return totalSnake.includes(newFood) ? generateFood(totalSnake) : newFood;
 };
 
-export const getDirection: (keyPress: string) => Direction = (keyPress) => {
+export const nextHead: (keyPress: string, currentHead: number) => number = (keyPress, currentHead): number => {
   switch (keyPress) {
     case `arrowup`:
     case `w`:
-      return `UP`;
+      return currentHead - 10;
     case `arrowright`:
     case `d`:
-      return `RIGHT`;
+      return currentHead + 1;
     case `arrowdown`:
     case `s`:
-      return `DOWN`;
+      return currentHead + 10;
     case `arrowleft`:
     case `a`:
-      return `LEFT`;
+      return currentHead - 1;
   }
 };

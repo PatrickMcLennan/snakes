@@ -1,7 +1,6 @@
 import { Reducer } from "react";
 
 export const state: IState = {
-  direction: `RIGHT`,
   head: 24,
   foodCoords: 50,
   bodyCoords: [23, 22, 21],
@@ -9,21 +8,24 @@ export const state: IState = {
   gameState: `PLAY`,
 };
 
-export const reducer: Reducer<IState, { type: string; payload?: number | boolean | string }> = (
-  state,
-  { type, payload }
-) => {
+export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
   switch (type) {
     case `FAILURE`:
       return {
         ...state,
         gameState: `FAIL`,
       };
-    case "KEYPRESS":
-    case "TIMER":
+    case "HAS_EATEN":
       return {
         ...state,
-        direction: payload,
+        head: payload.newHead,
+        bodyCoords: [payload.currentHead, ...payload.bodyCoords],
+      };
+    case "NOT_EATEN":
+      return {
+        ...state,
+        head: payload.newHead,
+        bodyCoords: [payload.currentHead, ...payload.bodyCoords.slice(0, -1)],
       };
     default:
       if (Object.prototype.hasOwnProperty.call(state, type))
