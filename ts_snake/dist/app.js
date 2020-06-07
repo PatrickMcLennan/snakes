@@ -31708,32 +31708,39 @@ __webpack_require__.r(__webpack_exports__);
 
 const App = () => {
   const [{
+    direction,
     head,
     bodyCoords,
     foodCoords,
     gameState
-  }, dispatch] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useReducer"])(_reducer__WEBPACK_IMPORTED_MODULE_4__["reducer"], _reducer__WEBPACK_IMPORTED_MODULE_4__["state"]);
+  }, dispatch] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useReducer"])(_reducer__WEBPACK_IMPORTED_MODULE_4__["reducer"], _reducer__WEBPACK_IMPORTED_MODULE_4__["initialState"]);
+
+  const moveSnake = newDirection => {
+    const newHead = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["nextHead"])(newDirection !== null && newDirection !== void 0 ? newDirection : direction, head);
+    const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["checkErrors"])(newHead, head, bodyCoords);
+    if (errors) return dispatch({
+      type: `FAILURE`
+    });else console.log(newDirection !== null && newDirection !== void 0 ? newDirection : direction);
+    return dispatch({
+      type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
+      payload: {
+        direction: newDirection !== null && newDirection !== void 0 ? newDirection : direction
+      }
+    });
+  };
 
   const listener = e => {
     e.stopImmediatePropagation();
-    const acceptedkeys = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
+    const acceptedKeys = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
     const formattedKey = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key);
-    if (!acceptedkeys.includes(formattedKey)) return;else {
-      const newHead = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["nextHead"])(formattedKey, head);
-      const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["checkErrors"])(newHead, head, bodyCoords);
-      if (errors) return dispatch({
-        type: `FAILURE`
-      });else return dispatch({
-        type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
-        payload: {
-          newHead
-        }
-      });
-    }
-  };
+    console.log(Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key));
+    if (!acceptedKeys.includes(formattedKey)) return;else return moveSnake(formattedKey);
+  }; //   gameState === `PLAY`
+  //     ? window.addEventListener(`keyup`, listener, true)
+  //     : window.removeEventListener(`keyup`, listener, true);
 
-  if (gameState === `PLAY`) window.addEventListener(`keyup`, listener, true);
-  if (gameState === `FAIL`) window.removeEventListener(`keyup`, listener, true);
+
+  window.addEventListener(`keyup`, listener, true);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_utils_resets_style__WEBPACK_IMPORTED_MODULE_1__["GlobalStyle"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Board__WEBPACK_IMPORTED_MODULE_2__["default"], {
     bodyCoords: bodyCoords,
     foodCoords: foodCoords,
@@ -31767,13 +31774,12 @@ const Board = ({
   foodCoords,
   playerHasLost
 }) => {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_styles__WEBPACK_IMPORTED_MODULE_1__["Game"], {
-    playerHasLost: playerHasLost
-  }, [...Array(100).keys()].map(index => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_styles__WEBPACK_IMPORTED_MODULE_1__["Square"], {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_styles__WEBPACK_IMPORTED_MODULE_1__["Game"], null, [...Array(100).keys()].map(index => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_styles__WEBPACK_IMPORTED_MODULE_1__["Square"], {
     isFood: foodCoords === index,
     isHead: head === index,
     isTail: bodyCoords.includes(index),
-    key: index
+    key: index,
+    playerHasLost: playerHasLost
   })));
 };
 
@@ -31803,13 +31809,18 @@ const Game = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div.withC
 const Square = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div.withConfig({
   displayName: "styles__Square",
   componentId: "sc-1rif3zb-1"
-})(["background-color:white;border:1px solid black;", " ", " ", ""], ({
+})(["background-color:white;border:1px solid black;", " ", " ", " ", ""], ({
   isFood
 }) => isFood && Object(styled_components__WEBPACK_IMPORTED_MODULE_0__["css"])(["background-color:red;"]), ({
   isHead
 }) => isHead && Object(styled_components__WEBPACK_IMPORTED_MODULE_0__["css"])(["background-color:green;"]), ({
   isTail
-}) => isTail && Object(styled_components__WEBPACK_IMPORTED_MODULE_0__["css"])(["background-color:black;"]));
+}) => isTail && Object(styled_components__WEBPACK_IMPORTED_MODULE_0__["css"])(["background-color:black;"]), ({
+  isFood,
+  isHead,
+  isTail,
+  playerHasLost
+}) => playerHasLost && !isFood && !isHead && !isTail && Object(styled_components__WEBPACK_IMPORTED_MODULE_0__["css"])(["background-color:rgba(255,0,0,0.3);"]));
 
 /***/ }),
 
@@ -31839,28 +31850,34 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/Object(rea
 /*!************************!*\
   !*** ./src/reducer.ts ***!
   \************************/
-/*! exports provided: state, reducer */
+/*! exports provided: initialState, reducer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "state", function() { return state; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialState", function() { return initialState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reducer", function() { return reducer; });
 /* harmony import */ var _utils_functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/functions */ "./src/utils/functions.ts");
 
-const state = {
-  head: 24,
-  foodCoords: 50,
+const initialState = {
   bodyCoords: [23, 22, 21],
-  gameOver: false,
-  gameState: `PLAY`
+  direction: `arrowright`,
+  foodCoords: 50,
+  gameState: `PLAY`,
+  head: 24
 };
+
+const failState = prevState => ({ ...prevState,
+  gameState: `FAIL`
+});
+
 const reducer = (state, {
   type,
   payload
 }) => {
-  console.log(type);
-  console.log(payload);
+  var _payload$direction, _payload$direction2, _payload$direction3;
+
+  console.log(state);
 
   switch (type) {
     case `FAILURE`:
@@ -31870,21 +31887,23 @@ const reducer = (state, {
 
     case "HAS_EATEN":
       return { ...state,
-        head: payload.newHead,
+        direction: (_payload$direction = payload.direction) !== null && _payload$direction !== void 0 ? _payload$direction : state.direction,
+        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction2 = payload === null || payload === void 0 ? void 0 : payload.direction) !== null && _payload$direction2 !== void 0 ? _payload$direction2 : state.direction, state.head),
         bodyCoords: [state.head, ...state.bodyCoords],
         foodCoords: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.newHead, state.head, ...payload.bodyCoords])
       };
 
     case "NOT_EATEN":
       return { ...state,
-        head: payload.newHead,
+        direction: payload.direction,
+        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction, state.head),
         bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)]
       };
 
     default:
       if (Object.prototype.hasOwnProperty.call(state, type)) return { ...state,
         [type]: payload
-      };else throw new Error(`Reducer is having troubles right now.`);
+      };else throw new Error(`${type} is having troubles right now.`);
   }
 };
 
@@ -31917,8 +31936,8 @@ const generateFood = totalSnake => {
   const newFood = Math.floor(Math.random() * 100);
   return totalSnake.includes(newFood) ? generateFood(totalSnake) : newFood;
 };
-const nextHead = (keyPress, currentHead) => {
-  switch (keyPress) {
+const nextHead = (direction, currentHead) => {
+  switch (direction) {
     case `arrowup`:
     case `w`:
       return currentHead - 10;

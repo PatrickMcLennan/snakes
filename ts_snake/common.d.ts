@@ -5,7 +5,6 @@ interface IState {
   bodyCoords: number[];
   direction: DirectionArrow;
   foodCoords: number;
-  gameOver: false;
   gameState: GameState;
   head: number;
 }

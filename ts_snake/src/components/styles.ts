@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-export const Game = styled.div<{ playerHasLost: boolean }>`
+export const Game = styled.div<{}>`
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -14,7 +14,7 @@ export const Game = styled.div<{ playerHasLost: boolean }>`
     `}
 `;
 
-export const Square = styled.div<{ isFood: boolean; isHead: boolean; isTail: boolean }>`
+export const Square = styled.div<{ isFood: boolean; isHead: boolean; isTail: boolean; playerHasLost: boolean }>`
   background-color: white;
   border: 1px solid black;
 
@@ -35,4 +35,13 @@ export const Square = styled.div<{ isFood: boolean; isHead: boolean; isTail: boo
     css`
       background-color: black;
     `}
+
+    ${({ isFood, isHead, isTail, playerHasLost }) =>
+      playerHasLost &&
+      !isFood &&
+      !isHead &&
+      !isTail &&
+      css`
+        background-color: rgba(255, 0, 0, 0.3);
+      `}
 `;

@@ -1,34 +1,38 @@
 import { Reducer } from "react";
 
-import { generateFood, nextHead } from "./utils/functions";
+import { checkErrors, generateFood, nextHead } from "./utils/functions";
 
-export const state: IState = {
+export const initialState: IState = {
   bodyCoords: [23, 22, 21],
   direction: `arrowright`,
   foodCoords: 50,
-  gameOver: false,
   gameState: `PLAY`,
   head: 24,
 };
 
+const failState: (prevState: IState) => IState = (prevState) => ({
+  ...prevState,
+  gameState: `FAIL`,
+});
+
 export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
+  console.log(state);
   switch (type) {
     case `FAILURE`:
-      return {
-        ...state,
-        gameState: `FAIL`,
-      };
+      return failState(state);
     case "HAS_EATEN":
       return {
         ...state,
-        head: payload.newHead,
+        direction: payload.direction ?? state.direction,
+        head: nextHead(payload?.direction ?? state.direction, state.head),
         bodyCoords: [state.head, ...state.bodyCoords],
         foodCoords: generateFood([payload.newHead, state.head, ...payload.bodyCoords]),
       };
     case "NOT_EATEN":
       return {
         ...state,
-        head: payload.newHead,
+        direction: payload.direction,
+        head: nextHead(payload.direction ?? state.direction, state.head),
         bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)],
       };
     default:
@@ -37,6 +41,6 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
           ...state,
           [type]: payload,
         };
-      else throw new Error(`Reducer is having troubles right now.`);
+      else throw new Error(`${type} is having troubles right now.`);
   }
 };

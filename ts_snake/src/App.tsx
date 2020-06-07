@@ -4,31 +4,34 @@ import { GlobalStyle } from "./utils/resets.style";
 import Board from "./components/Board";
 
 import { checkErrors, compareString, nextHead } from "./utils/functions";
-import { state as initialState, reducer } from "./reducer";
+import { initialState, reducer } from "./reducer";
 
 const App = (): JSX.Element => {
-  const [{ head, bodyCoords, foodCoords, gameState }, dispatch] = useReducer(reducer, initialState);
+  const [{ direction, head, bodyCoords, foodCoords, gameState }, dispatch] = useReducer(reducer, initialState);
+
+  const moveSnake = (newDirection?: DirectionArrow) => {
+    const newHead: number = nextHead(newDirection ?? direction, head);
+    const errors: boolean = checkErrors(newHead, head, bodyCoords);
+    if (errors) return dispatch({ type: `FAILURE` });
+    return dispatch({
+      type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
+      payload: { direction: newDirection ?? direction },
+    });
+  };
 
   const listener = (e: KeyboardEvent) => {
     e.stopImmediatePropagation();
-    const acceptedkeys: DirectionArrow[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
+    const acceptedKeys: DirectionArrow[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
     const formattedKey: DirectionArrow = compareString(e.key);
-    if (!acceptedkeys.includes(formattedKey)) return;
-    else {
-      const newHead: number = nextHead(formattedKey, head);
-      const errors: boolean = checkErrors(newHead, head, bodyCoords);
-      if (errors) return dispatch({ type: `FAILURE` });
-      else
-        return dispatch({
-          type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
-          payload: { direction: form },
-        });
-    }
+    if (!acceptedKeys.includes(formattedKey)) return;
+    else return moveSnake(formattedKey);
   };
 
-  if (gameState === `PLAY`) window.addEventListener(`keyup`, listener, true);
-  if (gameState === `FAIL`) window.removeEventListener(`keyup`, listener, true);
+  //   gameState === `PLAY`
+  //     ? window.addEventListener(`keyup`, listener, true)
+  //     : window.removeEventListener(`keyup`, listener, true);
 
+  window.addEventListener(`keyup`, listener, true);
   return (
     <>
       <GlobalStyle />
