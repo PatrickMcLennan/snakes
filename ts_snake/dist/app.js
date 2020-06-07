@@ -31724,12 +31724,18 @@ const App = () => {
 
   const listener = e => {
     e.stopImmediatePropagation();
+    if (gameState === `FAIL`) return;
     const acceptedKeys = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
     const formattedKey = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key);
     if (!acceptedKeys.includes(formattedKey)) return;else return moveSnake(formattedKey);
   };
 
-  window.addEventListener(`keyup`, listener);
+  window.addEventListener(`keyup`, listener, true);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
+    setInterval(() => dispatch({
+      type: `MOVE_SNAKE`
+    }), 400);
+  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_utils_resets_style__WEBPACK_IMPORTED_MODULE_1__["GlobalStyle"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Board__WEBPACK_IMPORTED_MODULE_2__["default"], {
     bodyCoords: bodyCoords,
     foodCoords: foodCoords,
@@ -31864,37 +31870,22 @@ const reducer = (state, {
   type,
   payload
 }) => {
-  var _payload$direction, _payload$direction2, _payload$direction3, _payload$direction4;
+  var _payload$direction, _payload$direction2;
 
   const newHead = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction = payload === null || payload === void 0 ? void 0 : payload.direction) !== null && _payload$direction !== void 0 ? _payload$direction : state.direction, state.head);
   const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["checkErrors"])(newHead, state.head, state.bodyCoords);
   if (errors) return failState(state);
   const hasEaten = newHead === state.foodCoords;
   const bodyCoords = hasEaten ? [state.head, ...state.bodyCoords] : [state.head, ...state.bodyCoords.slice(0, -1)];
-  const foodCoords = hasEaten ? Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.newHead, ...bodyCoords]) : state.foodCoords;
+  const foodCoords = hasEaten ? Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([newHead, ...bodyCoords]) : state.foodCoords;
 
   switch (type) {
     case `FAILURE`:
       return failState(state);
 
-    case "HAS_EATEN":
-      return { ...state,
-        direction: (_payload$direction2 = payload.direction) !== null && _payload$direction2 !== void 0 ? _payload$direction2 : state.direction,
-        head: newHead,
-        bodyCoords: [state.head, ...state.bodyCoords],
-        foodCoords
-      };
-
-    case "NOT_EATEN":
-      return { ...state,
-        direction: (_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction,
-        head: newHead,
-        bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)]
-      };
-
     case `MOVE_SNAKE`:
       return { ...state,
-        direction: (_payload$direction4 = payload.direction) !== null && _payload$direction4 !== void 0 ? _payload$direction4 : state.direction,
+        direction: (_payload$direction2 = payload === null || payload === void 0 ? void 0 : payload.direction) !== null && _payload$direction2 !== void 0 ? _payload$direction2 : state.direction,
         head: newHead,
         bodyCoords,
         foodCoords

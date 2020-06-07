@@ -23,30 +23,15 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
   const bodyCoords: number[] = hasEaten
     ? [state.head, ...state.bodyCoords]
     : [state.head, ...state.bodyCoords.slice(0, -1)];
-  const foodCoords: number = hasEaten ? generateFood([payload.newHead, ...bodyCoords]) : state.foodCoords;
+  const foodCoords: number = hasEaten ? generateFood([newHead, ...bodyCoords]) : state.foodCoords;
 
   switch (type) {
     case `FAILURE`:
       return failState(state);
-    case "HAS_EATEN":
-      return {
-        ...state,
-        direction: payload.direction ?? state.direction,
-        head: newHead,
-        bodyCoords: [state.head, ...state.bodyCoords],
-        foodCoords,
-      };
-    case "NOT_EATEN":
-      return {
-        ...state,
-        direction: payload.direction ?? state.direction,
-        head: newHead,
-        bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)],
-      };
     case `MOVE_SNAKE`:
       return {
         ...state,
-        direction: payload.direction ?? state.direction,
+        direction: payload?.direction ?? state.direction,
         head: newHead,
         bodyCoords,
         foodCoords,
