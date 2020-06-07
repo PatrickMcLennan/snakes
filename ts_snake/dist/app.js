@@ -31861,7 +31861,7 @@ const reducer = (state, {
   type,
   payload
 }) => {
-  console.log(payload);
+  console.log(type);
 
   switch (type) {
     case `FAILURE`:

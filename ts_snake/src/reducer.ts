@@ -11,7 +11,6 @@ export const state: IState = {
 };
 
 export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
-  console.log(payload);
   switch (type) {
     case `FAILURE`:
       return {
