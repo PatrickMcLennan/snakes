@@ -31861,8 +31861,6 @@ const reducer = (state, {
   type,
   payload
 }) => {
-  console.log(type);
-
   switch (type) {
     case `FAILURE`:
       return { ...state,
@@ -31877,6 +31875,7 @@ const reducer = (state, {
       };
 
     case "NOT_EATEN":
+      console.log([payload.currentHead, ...payload.bodyCoords.slice(0, -1)]);
       return { ...state,
         head: payload.newHead,
         bodyCoords: [payload.currentHead, ...payload.bodyCoords.slice(0, -1)]

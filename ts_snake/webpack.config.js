@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require(`html-webpack-plugin`);
 const ScriptExtHtmlWebpackPlugin = require(`script-ext-html-webpack-plugin`);
 const TerserPlugin = require(`terser-webpack-plugin`);
+const { CleanWebpackPlugin } = require(`clean-webpack-plugin`);
 
 module.exports = (_env, argv) => {
   const PROD = argv.mode.toString().trim().toLowerCase() === `production`;
@@ -22,6 +23,7 @@ module.exports = (_env, argv) => {
       filename: `app.js`,
     },
     plugins: [
+      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         template: `./template.html`,
         inject: `head`,
