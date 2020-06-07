@@ -31720,7 +31720,7 @@ const App = () => {
     const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["checkErrors"])(newHead, head, bodyCoords);
     if (errors) return dispatch({
       type: `FAILURE`
-    });else console.log(newDirection !== null && newDirection !== void 0 ? newDirection : direction);
+    });
     return dispatch({
       type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
       payload: {
@@ -31733,7 +31733,6 @@ const App = () => {
     e.stopImmediatePropagation();
     const acceptedKeys = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
     const formattedKey = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key);
-    console.log(Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key));
     if (!acceptedKeys.includes(formattedKey)) return;else return moveSnake(formattedKey);
   }; //   gameState === `PLAY`
   //     ? window.addEventListener(`keyup`, listener, true)
@@ -31875,15 +31874,11 @@ const reducer = (state, {
   type,
   payload
 }) => {
-  var _payload$direction, _payload$direction2, _payload$direction3;
-
-  console.log(state);
+  var _payload$direction, _payload$direction2, _payload$direction3, _payload$direction4, _payload$direction5;
 
   switch (type) {
     case `FAILURE`:
-      return { ...state,
-        gameState: `FAIL`
-      };
+      return failState(state);
 
     case "HAS_EATEN":
       return { ...state,
@@ -31894,9 +31889,9 @@ const reducer = (state, {
       };
 
     case "NOT_EATEN":
-      return { ...state,
-        direction: payload.direction,
-        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction, state.head),
+      return Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["checkErrors"])(Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction, state.head), state.head, state.bodyCoords) ? failState(state) : { ...state,
+        direction: (_payload$direction4 = payload.direction) !== null && _payload$direction4 !== void 0 ? _payload$direction4 : state.direction,
+        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction5 = payload.direction) !== null && _payload$direction5 !== void 0 ? _payload$direction5 : state.direction, state.head),
         bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)]
       };
 
@@ -31922,11 +31917,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkErrors", function() { return checkErrors; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateFood", function() { return generateFood; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nextHead", function() { return nextHead; });
-const rightWall = [9, 19, 29, 39, 40, 59, 69, 79, 89, 99];
+const rightWall = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
 const leftWall = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 const compareString = string => string.trim().toLowerCase(); // Gameplay
 
 const checkErrors = (newHead, currentHead, bodyCoords) => {
+  console.log(newHead, currentHead, bodyCoords);
   if (bodyCoords.includes(newHead)) return true;
   if (rightWall.includes(currentHead) && currentHead + 1 === newHead) return true;
   if (leftWall.includes(currentHead) && currentHead - 1 === newHead) return true;

@@ -16,7 +16,6 @@ const failState: (prevState: IState) => IState = (prevState) => ({
 });
 
 export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
-  console.log(state);
   switch (type) {
     case `FAILURE`:
       return failState(state);
@@ -29,12 +28,14 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
         foodCoords: generateFood([payload.newHead, state.head, ...payload.bodyCoords]),
       };
     case "NOT_EATEN":
-      return {
-        ...state,
-        direction: payload.direction,
-        head: nextHead(payload.direction ?? state.direction, state.head),
-        bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)],
-      };
+      return checkErrors(nextHead(payload.direction ?? state.direction, state.head), state.head, state.bodyCoords)
+        ? failState(state)
+        : {
+            ...state,
+            direction: payload.direction ?? state.direction,
+            head: nextHead(payload.direction ?? state.direction, state.head),
+            bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)],
+          };
     default:
       if (Object.prototype.hasOwnProperty.call(state, type))
         return {

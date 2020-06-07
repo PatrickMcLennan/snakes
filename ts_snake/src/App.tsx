@@ -27,11 +27,8 @@ const App = (): JSX.Element => {
     else return moveSnake(formattedKey);
   };
 
-  //   gameState === `PLAY`
-  //     ? window.addEventListener(`keyup`, listener, true)
-  //     : window.removeEventListener(`keyup`, listener, true);
-
   window.addEventListener(`keyup`, listener, true);
+
   return (
     <>
       <GlobalStyle />
