@@ -9,7 +9,7 @@ export const checkErrors: (newHead: number, currentHead: number, bodyCoords: num
   currentHead,
   bodyCoords
 ) => {
-  console.log(newHead, currentHead, bodyCoords);
+  //   console.log(newHead, currentHead, bodyCoords);
   if (bodyCoords.includes(newHead)) return true;
   if (rightWall.includes(currentHead) && currentHead + 1 === newHead) return true;
   if (leftWall.includes(currentHead) && currentHead - 1 === newHead) return true;
@@ -22,10 +22,7 @@ export const generateFood: (totalSnake: number[]) => number = (totalSnake) => {
   return totalSnake.includes(newFood) ? generateFood(totalSnake) : newFood;
 };
 
-export const nextHead: (direction: DirectionArrow, currentHead: number) => number = (
-  direction,
-  currentHead
-): number => {
+export const nextHead: (direction: DirectionArrow, currentHead: number) => number = (direction, currentHead) => {
   switch (direction) {
     case `arrowup`:
     case `w`:

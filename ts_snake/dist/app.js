@@ -31715,31 +31715,21 @@ const App = () => {
     gameState
   }, dispatch] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useReducer"])(_reducer__WEBPACK_IMPORTED_MODULE_4__["reducer"], _reducer__WEBPACK_IMPORTED_MODULE_4__["initialState"]);
 
-  const moveSnake = newDirection => {
-    const newHead = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["nextHead"])(newDirection !== null && newDirection !== void 0 ? newDirection : direction, head);
-    const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["checkErrors"])(newHead, head, bodyCoords);
-    if (errors) return dispatch({
-      type: `FAILURE`
-    });
-    return dispatch({
-      type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
-      payload: {
-        direction: newDirection !== null && newDirection !== void 0 ? newDirection : direction
-      }
-    });
-  };
+  const moveSnake = newDirection => dispatch({
+    type: `MOVE_SNAKE`,
+    payload: {
+      direction: newDirection !== null && newDirection !== void 0 ? newDirection : direction
+    }
+  });
 
   const listener = e => {
     e.stopImmediatePropagation();
     const acceptedKeys = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
     const formattedKey = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_3__["compareString"])(e.key);
     if (!acceptedKeys.includes(formattedKey)) return;else return moveSnake(formattedKey);
-  }; //   gameState === `PLAY`
-  //     ? window.addEventListener(`keyup`, listener, true)
-  //     : window.removeEventListener(`keyup`, listener, true);
+  };
 
-
-  window.addEventListener(`keyup`, listener, true);
+  window.addEventListener(`keyup`, listener);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_utils_resets_style__WEBPACK_IMPORTED_MODULE_1__["GlobalStyle"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Board__WEBPACK_IMPORTED_MODULE_2__["default"], {
     bodyCoords: bodyCoords,
     foodCoords: foodCoords,
@@ -31874,7 +31864,14 @@ const reducer = (state, {
   type,
   payload
 }) => {
-  var _payload$direction, _payload$direction2, _payload$direction3, _payload$direction4, _payload$direction5;
+  var _payload$direction, _payload$direction2, _payload$direction3, _payload$direction4;
+
+  const newHead = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction = payload === null || payload === void 0 ? void 0 : payload.direction) !== null && _payload$direction !== void 0 ? _payload$direction : state.direction, state.head);
+  const errors = Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["checkErrors"])(newHead, state.head, state.bodyCoords);
+  if (errors) return failState(state);
+  const hasEaten = newHead === state.foodCoords;
+  const bodyCoords = hasEaten ? [state.head, ...state.bodyCoords] : [state.head, ...state.bodyCoords.slice(0, -1)];
+  const foodCoords = hasEaten ? Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.newHead, ...bodyCoords]) : state.foodCoords;
 
   switch (type) {
     case `FAILURE`:
@@ -31882,23 +31879,31 @@ const reducer = (state, {
 
     case "HAS_EATEN":
       return { ...state,
-        direction: (_payload$direction = payload.direction) !== null && _payload$direction !== void 0 ? _payload$direction : state.direction,
-        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction2 = payload === null || payload === void 0 ? void 0 : payload.direction) !== null && _payload$direction2 !== void 0 ? _payload$direction2 : state.direction, state.head),
+        direction: (_payload$direction2 = payload.direction) !== null && _payload$direction2 !== void 0 ? _payload$direction2 : state.direction,
+        head: newHead,
         bodyCoords: [state.head, ...state.bodyCoords],
-        foodCoords: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.newHead, state.head, ...payload.bodyCoords])
+        foodCoords
       };
 
     case "NOT_EATEN":
-      return Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["checkErrors"])(Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction, state.head), state.head, state.bodyCoords) ? failState(state) : { ...state,
-        direction: (_payload$direction4 = payload.direction) !== null && _payload$direction4 !== void 0 ? _payload$direction4 : state.direction,
-        head: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["nextHead"])((_payload$direction5 = payload.direction) !== null && _payload$direction5 !== void 0 ? _payload$direction5 : state.direction, state.head),
+      return { ...state,
+        direction: (_payload$direction3 = payload.direction) !== null && _payload$direction3 !== void 0 ? _payload$direction3 : state.direction,
+        head: newHead,
         bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)]
+      };
+
+    case `MOVE_SNAKE`:
+      return { ...state,
+        direction: (_payload$direction4 = payload.direction) !== null && _payload$direction4 !== void 0 ? _payload$direction4 : state.direction,
+        head: newHead,
+        bodyCoords,
+        foodCoords
       };
 
     default:
       if (Object.prototype.hasOwnProperty.call(state, type)) return { ...state,
         [type]: payload
-      };else throw new Error(`${type} is having troubles right now.`);
+      };else throw new Error(`${type} was sent to the reducer, this is a problem.`);
   }
 };
 
@@ -31922,7 +31927,7 @@ const leftWall = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 const compareString = string => string.trim().toLowerCase(); // Gameplay
 
 const checkErrors = (newHead, currentHead, bodyCoords) => {
-  console.log(newHead, currentHead, bodyCoords);
+  //   console.log(newHead, currentHead, bodyCoords);
   if (bodyCoords.includes(newHead)) return true;
   if (rightWall.includes(currentHead) && currentHead + 1 === newHead) return true;
   if (leftWall.includes(currentHead) && currentHead - 1 === newHead) return true;

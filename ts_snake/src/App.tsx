@@ -9,25 +9,21 @@ import { initialState, reducer } from "./reducer";
 const App = (): JSX.Element => {
   const [{ direction, head, bodyCoords, foodCoords, gameState }, dispatch] = useReducer(reducer, initialState);
 
-  const moveSnake = (newDirection?: DirectionArrow) => {
-    const newHead: number = nextHead(newDirection ?? direction, head);
-    const errors: boolean = checkErrors(newHead, head, bodyCoords);
-    if (errors) return dispatch({ type: `FAILURE` });
-    return dispatch({
-      type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
+  const moveSnake = (newDirection?: DirectionArrow) =>
+    dispatch({
+      type: `MOVE_SNAKE`,
       payload: { direction: newDirection ?? direction },
     });
-  };
 
   const listener = (e: KeyboardEvent) => {
     e.stopImmediatePropagation();
     const acceptedKeys: DirectionArrow[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
-    const formattedKey: DirectionArrow = compareString(e.key);
-    if (!acceptedKeys.includes(formattedKey)) return;
-    else return moveSnake(formattedKey);
+    const formattedKey: string = compareString(e.key);
+    if (!acceptedKeys.includes(formattedKey as DirectionArrow)) return;
+    else return moveSnake(formattedKey as DirectionArrow);
   };
 
-  window.addEventListener(`keyup`, listener, true);
+  window.addEventListener(`keyup`, listener);
 
   return (
     <>

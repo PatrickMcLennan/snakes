@@ -1,5 +1,5 @@
 type GameState = `PLAY` | `FAIL`;
-type DirectionArrow = `arrowup` | `w` | `arrowright` | `d` | "arrowdown" | "s" | "arrowleft" | "a" | string;
+type DirectionArrow = `arrowup` | `w` | `arrowright` | `d` | "arrowdown" | "s" | "arrowleft" | "a";
 
 interface IState {
   bodyCoords: number[];
