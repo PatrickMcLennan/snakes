@@ -31726,9 +31726,7 @@ const App = () => {
       });else return dispatch({
         type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
         payload: {
-          newHead,
-          currentHead: head,
-          bodyCoords
+          newHead
         }
       });
     }
@@ -31861,6 +31859,9 @@ const reducer = (state, {
   type,
   payload
 }) => {
+  console.log(type);
+  console.log(payload);
+
   switch (type) {
     case `FAILURE`:
       return { ...state,
@@ -31870,15 +31871,14 @@ const reducer = (state, {
     case "HAS_EATEN":
       return { ...state,
         head: payload.newHead,
-        bodyCoords: [payload.currentHead, ...payload.bodyCoords],
-        foodCoords: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.currentHead, ...payload.bodyCoords])
+        bodyCoords: [state.head, ...state.bodyCoords],
+        foodCoords: Object(_utils_functions__WEBPACK_IMPORTED_MODULE_0__["generateFood"])([payload.newHead, state.head, ...payload.bodyCoords])
       };
 
     case "NOT_EATEN":
-      console.log([payload.currentHead, ...payload.bodyCoords.slice(0, -1)]);
       return { ...state,
         head: payload.newHead,
-        bodyCoords: [payload.currentHead, ...payload.bodyCoords.slice(0, -1)]
+        bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)]
       };
 
     default:

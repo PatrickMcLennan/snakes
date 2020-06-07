@@ -21,8 +21,11 @@ export const generateFood: (totalSnake: number[]) => number = (totalSnake) => {
   return totalSnake.includes(newFood) ? generateFood(totalSnake) : newFood;
 };
 
-export const nextHead: (keyPress: string, currentHead: number) => number = (keyPress, currentHead): number => {
-  switch (keyPress) {
+export const nextHead: (direction: DirectionArrow, currentHead: number) => number = (
+  direction,
+  currentHead
+): number => {
+  switch (direction) {
     case `arrowup`:
     case `w`:
       return currentHead - 10;

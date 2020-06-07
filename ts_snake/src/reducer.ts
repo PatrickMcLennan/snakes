@@ -1,13 +1,14 @@
 import { Reducer } from "react";
 
-import { generateFood } from "./utils/functions";
+import { generateFood, nextHead } from "./utils/functions";
 
 export const state: IState = {
-  head: 24,
-  foodCoords: 50,
   bodyCoords: [23, 22, 21],
+  direction: `arrowright`,
+  foodCoords: 50,
   gameOver: false,
   gameState: `PLAY`,
+  head: 24,
 };
 
 export const reducer: Reducer<IState, { type: string; payload? }> = (state, { type, payload }) => {
@@ -21,14 +22,14 @@ export const reducer: Reducer<IState, { type: string; payload? }> = (state, { ty
       return {
         ...state,
         head: payload.newHead,
-        bodyCoords: [payload.currentHead, ...payload.bodyCoords],
-        foodCoords: generateFood([payload.currentHead, ...payload.bodyCoords]),
+        bodyCoords: [state.head, ...state.bodyCoords],
+        foodCoords: generateFood([payload.newHead, state.head, ...payload.bodyCoords]),
       };
     case "NOT_EATEN":
       return {
         ...state,
         head: payload.newHead,
-        bodyCoords: [payload.currentHead, ...payload.bodyCoords.slice(0, -1)],
+        bodyCoords: [state.head, ...state.bodyCoords.slice(0, -1)],
       };
     default:
       if (Object.prototype.hasOwnProperty.call(state, type))

@@ -11,8 +11,8 @@ const App = (): JSX.Element => {
 
   const listener = (e: KeyboardEvent) => {
     e.stopImmediatePropagation();
-    const acceptedkeys: string[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
-    const formattedKey: string = compareString(e.key);
+    const acceptedkeys: DirectionArrow[] = [`arrowup`, `w`, `arrowright`, `d`, `arrowdown`, `s`, `arrowleft`, `a`];
+    const formattedKey: DirectionArrow = compareString(e.key);
     if (!acceptedkeys.includes(formattedKey)) return;
     else {
       const newHead: number = nextHead(formattedKey, head);
@@ -21,7 +21,7 @@ const App = (): JSX.Element => {
       else
         return dispatch({
           type: newHead === foodCoords ? `HAS_EATEN` : `NOT_EATEN`,
-          payload: { newHead, currentHead: head, bodyCoords },
+          payload: { direction: form },
         });
     }
   };
